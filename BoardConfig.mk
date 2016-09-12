@@ -15,8 +15,8 @@
 #
 
 # inherit from the proprietary version
--include vendor/huawei/holly/BoardConfigVendor.mk
-LOCAL_PATH := device/huawei/holly
+-include vendor/terra/terrapad803/BoardConfigVendor.mk
+LOCAL_PATH := device/terra/terrapad803
 
 # Board
 TARGET_BOARD_PLATFORM := mt6582
@@ -45,7 +45,7 @@ TARGET_USERIMAGES_USE_EXT4:=true
 TARGET_USERIMAGES_SPARSE_EXT_DISABLED := false
 
 # Assert
-#TARGET_OTA_ASSERT_DEVICE := holly
+#TARGET_OTA_ASSERT_DEVICE := terrapad803
 
 # MTK HARDWARE
 BOARD_HAS_MTK_HARDWARE := true
@@ -56,7 +56,7 @@ COMMON_GLOBAL_CPPFLAGS += -DMTK_HARDWARE
 BLOCK_BASED_OTA := false
 
 # RIL
-BOARD_RIL_CLASS := ../../../device/huawei/holly/ril/
+BOARD_RIL_CLASS := ../../../device/terra/terrapad803/ril/
 BOARD_CONNECTIVITY_VENDOR := MediaTek
 BOARD_CONNECTIVITY_MODULE := conn_soc
 
@@ -147,7 +147,7 @@ TARGET_CPU_MEMCPY_OPT_DISABLE := true
 USE_MINIKIN := true
 
 # Selinux
-BOARD_SEPOLICY_DIRS += device/huawei/holly/sepolicy
+BOARD_SEPOLICY_DIRS += device/terra/terrapad803/sepolicy
 
 # Sepolicy hack for old kernel, mt6582 version is 26.
 POLICYVERS := 26

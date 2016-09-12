@@ -1,4 +1,4 @@
-#Device Tree for Huawei Honor Holly 
+#Device Tree for Terra Honor Terrapad 803 
 #MT6582
 ==============
 

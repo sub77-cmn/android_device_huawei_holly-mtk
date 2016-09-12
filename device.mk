@@ -25,7 +25,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 # PRODUCT_DEX_PREOPT_DEFAULT_FLAGS := --compiler-filter=interpret-only
 # $(call add-product-dex-preopt-module-config,services,--compiler-filter=space)
 
-LOCAL_PATH := device/huawei/holly
+LOCAL_PATH := device/terra/terrapad803
 
 PRODUCT_CHARACTERISTICS := default
 
@@ -205,8 +205,8 @@ PRODUCT_PROPERTY_OVERRIDES := \
 $(call inherit-product, build/target/product/full.mk)
 
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
-PRODUCT_NAME := full_holly
-PRODUCT_DEVICE := holly
+PRODUCT_NAME := full_terrapad803
+PRODUCT_DEVICE := terrapad803
 
 # Boot animation
 TARGET_SCREEN_HEIGHT := 1280
