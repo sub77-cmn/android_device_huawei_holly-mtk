@@ -3,4 +3,4 @@ allow platform_app init_tmpfs:file read;
 allow platform_app fm_device:chr_file { read write ioctl open };
 
 # 2016-6-10 added by ferhung
-allow platform_app healthd_service:service_manager find;
+#allow platform_app healthd_service:service_manager find;
