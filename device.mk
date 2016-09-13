@@ -55,7 +55,7 @@ PRODUCT_PACKAGES += \
     audio.r_submix.default \
     libaudio-resampler \
     tinymix
-
+    
 PRODUCT_PACKAGES += \
     lib_driver_cmd_mt66xx
 
