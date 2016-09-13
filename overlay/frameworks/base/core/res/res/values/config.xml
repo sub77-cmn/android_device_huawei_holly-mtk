@@ -359,6 +359,6 @@
  -->
 
     <!-- IpReachability monitor enable/Disable -->
-    <bool translatable="false" name="config_wifi_ipreachability_monitor">false</bool>
+    <!--bool translatable="false" name="config_wifi_ipreachability_monitor">false</bool>-->
 
 </resources>
