@@ -14,22 +14,22 @@
 # limitations under the License.
 #
 
-# The gps config appropriate for this device
-$(call inherit-product, device/common/gps/gps_us_supl.mk)
-
-# Inherit from the common Open Source product configuration
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
-# Enable dex-preoptimization, but we have both limited space in the system and data partitions.
-# PRODUCT_DEX_PREOPT_DEFAULT_FLAGS := --compiler-filter=interpret-only
-# $(call add-product-dex-preopt-module-config,services,--compiler-filter=space)
+# Get non-open-source specific aspects
+$(call inherit-product-if-exists, vendor/terra/terrapad803/terrapad803-vendor.mk)
 
-LOCAL_PATH := device/terra/terrapad803
+# Overlays
+DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
+# Device uses high-density artwork where available
+PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
+PRODUCT_AAPT_PREF_CONFIG := xhdpi
 PRODUCT_CHARACTERISTICS := default
 
-DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
+# Boot animation
+TARGET_SCREEN_HEIGHT := 1280
+TARGET_SCREEN_WIDTH := 800
 
 ifeq ($(TARGET_PREBUILT_KERNEL),)
 	LOCAL_KERNEL := $(LOCAL_PATH)/kernel
@@ -38,9 +38,6 @@ else
 endif
 
 PRODUCT_TAGS += dalvik.gc.type-precise
-
-PRODUCT_PACKAGES += \
-    Torch
 
 PRODUCT_PACKAGES += \
     libxlog
@@ -163,8 +160,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     FMRadio \
     libfmcust \
-    libfmjni \
-     libmtkplayer
+    libfmjni
 
 PRODUCT_PACKAGES += \
     libgralloc_extra
@@ -202,45 +198,10 @@ PRODUCT_PROPERTY_OVERRIDES := \
     persist.service.debuggable=1 \
     persist.mtk.wcn.combo.chipid=-1
 
-$(call inherit-product, build/target/product/full.mk)
-
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
-PRODUCT_NAME := full_terrapad803
-PRODUCT_DEVICE := terrapad803
-
-# Boot animation
-TARGET_SCREEN_HEIGHT := 1280
-TARGET_SCREEN_WIDTH := 720
 
 PRODUCT_PACKAGES += \
+    com.android.future.usb.accessory \
     librs_jni \
-    com.android.future.usb.accessory
-
-# Remove unwanted packages
-PRODUCT_PACKAGES_OVERRIDES += \
-    audio.primary.goldfish \
-    camera.goldfish.jpeg \
-    camera.goldfish \
-    fingerprint.goldfish \
-    fingerprint.ranchu \
-    gps.goldfish \
-    lights.goldfish \
-    power.goldfish \
-    sensors.goldfish \
-    sensors.ranchu \
-    vibrator.goldfish
-
-# Remove unwanted files
-PRODUCT_COPY_FILES_OVERRIDES += \
-    root/fstab.goldfish \
-    root/fstab.ranchu \
-    root/init.goldfish.rc \
-    root/init.ranchu.rc \
-    root/ueventd.goldfish.rc \
-    root/ueventd.ranchu.rc \
-    recovery/root/fstab.goldfish \
-    recovery/root/fstab.ranchu \
-    recovery/root/ueventd.goldfish.rc \
-    recovery/root/ueventd.ranchu.rc
 
 $(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
