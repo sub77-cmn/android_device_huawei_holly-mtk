@@ -1,14 +1,15 @@
-From e0280f97ef4e5987c2b5a4010c4c1d18b4e469cc Mon Sep 17 00:00:00 2001
-From: ferhung-mtk <ferhung27@gmail.com>
-Date: Tue, 31 May 2016 22:04:33 +0800
-Subject: [PATCH] MediaTek: add mtk blobs.
+From 85a5196e9b0e7b162d6f6c46c22b53957925e6c4 Mon Sep 17 00:00:00 2001
+From: sub77 <sub77@ymail.com>
+Date: Mon, 12 Sep 2016 23:06:16 +0200
+Subject: [PATCH] MediaTek
 
+Change-Id: I743e89221a779546843ff8ec86338c4982539196
 ---
  include/ui/Fence.h                                 |   6 ++
  include/ui/GraphicBufferMapper.h                   |   8 ++
  include/ui/mediatek/IDumpTunnel.h                  |  50 +++++++++
  include/ui/mediatek/RefBaseDump.h                  |  64 ++++++++++++
- libs/ui/Android.mk                                 |  14 +++
+ libs/ui/Android.mk                                 |  15 +++
  libs/ui/GraphicBufferMapper.cpp                    |  13 +++
  libs/ui/mediatek/Fence.cpp                         |  60 +++++++++++
  libs/ui/mediatek/IDumpTunnel.cpp                   | 115 +++++++++++++++++++++
@@ -17,7 +18,8 @@ Subject: [PATCH] MediaTek: add mtk blobs.
  libs/ui/mediatek/test/RefBaseDumpTunnel/Android.mk |  16 +++
  .../test/RefBaseDumpTunnel/RefBaseDumpTunnel.cpp   | 106 +++++++++++++++++++
  .../test/RefBaseDumpTunnel/RefBaseDumpTunnel.h     |  18 ++++
- 13 files changed, 583 insertions(+)
+ opengl/libs/EGL/eglApi.cpp                         |   5 +-
+ 14 files changed, 588 insertions(+), 1 deletion(-)
  create mode 100644 include/ui/mediatek/IDumpTunnel.h
  create mode 100644 include/ui/mediatek/RefBaseDump.h
  create mode 100644 libs/ui/mediatek/Fence.cpp
@@ -32,7 +34,7 @@ diff --git a/include/ui/Fence.h b/include/ui/Fence.h
 index b431bd5..bc4575d 100644
 --- a/include/ui/Fence.h
 +++ b/include/ui/Fence.h
-@@ -110,6 +110,12 @@ class Fence
+@@ -110,6 +110,12 @@ private:
      const Fence& operator = (const Fence& rhs) const;
  
      int mFenceFd;
@@ -49,7 +51,7 @@ diff --git a/include/ui/GraphicBufferMapper.h b/include/ui/GraphicBufferMapper.h
 index 9900624..47c5117 100644
 --- a/include/ui/GraphicBufferMapper.h
 +++ b/include/ui/GraphicBufferMapper.h
-@@ -72,6 +72,14 @@ class GraphicBufferMapper : public Singleton<GraphicBufferMapper>
+@@ -72,6 +72,14 @@ private:
      gralloc_module_t const *mAllocMod;
  };
  
@@ -191,13 +193,14 @@ index 0000000..a6a483d
 +#endif
 +
 diff --git a/libs/ui/Android.mk b/libs/ui/Android.mk
-index a8eb67b..d347ca9 100644
+index d8cabad..d403b8f 100644
 --- a/libs/ui/Android.mk
 +++ b/libs/ui/Android.mk
-@@ -45,12 +45,26 @@ LOCAL_SRC_FILES := \
+@@ -45,6 +45,17 @@ LOCAL_SRC_FILES := \
+ 	Rect.cpp \
  	Region.cpp \
  	UiConfig.cpp
- 
++	
 +ifeq ($(BOARD_HAS_MTK_HARDWARE),true)
 +LOCAL_SRC_FILES += \
 +	mediatek/Fence.cpp \
@@ -208,9 +211,10 @@ index a8eb67b..d347ca9 100644
 +LOCAL_CPPFLAGS := -std=c++1y -Weverything
 +
 +endif
+ 
  LOCAL_SHARED_LIBRARIES := \
- 	libcutils \
- 	libhardware \
+ 	libbinder \
+@@ -53,6 +64,10 @@ LOCAL_SHARED_LIBRARIES := \
  	libsync \
  	libutils \
  	liblog
@@ -715,22 +719,11 @@ index 0000000..84f21b0
 +
 +};
 +
-
-
-From f9245a14664806d5dc547faa7f5c003b9fe84a8f Mon Sep 17 00:00:00 2001
-From: ferhung-mtk <ferhung27@gmail.com>
-Date: Tue, 31 May 2016 22:06:15 +0800
-Subject: [PATCH] MediaTek: fix game crashing.
-
----
- opengl/libs/EGL/eglApi.cpp | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
 diff --git a/opengl/libs/EGL/eglApi.cpp b/opengl/libs/EGL/eglApi.cpp
-index 2f6bc79..83a7991 100644
+index 3c00fc9..45d9543 100644
 --- a/opengl/libs/EGL/eglApi.cpp
 +++ b/opengl/libs/EGL/eglApi.cpp
-@@ -151,11 +151,13 @@ static const extention_map_t sExtensionMap[] = {
+@@ -157,11 +157,13 @@ static const extention_map_t sExtensionMap[] = {
      { "eglGetSyncAttribKHR",
              (__eglMustCastToProperFunctionPointerType)&eglGetSyncAttribKHR },
  
@@ -744,7 +737,7 @@ index 2f6bc79..83a7991 100644
  
      // EGL_KHR_wait_sync
      { "eglWaitSyncKHR",
-@@ -1835,6 +1837,7 @@ EGLBoolean eglPresentationTimeANDROID(EGLDisplay dpy, EGLSurface surface,
+@@ -1880,6 +1882,7 @@ EGLClientBuffer eglCreateNativeClientBufferANDROID(const EGLint *attrib_list)
  // ----------------------------------------------------------------------------
  // NVIDIA extensions
  // ----------------------------------------------------------------------------
@@ -752,7 +745,7 @@ index 2f6bc79..83a7991 100644
  EGLuint64NV eglGetSystemTimeFrequencyNV()
  {
      clearError();
-@@ -1870,7 +1873,7 @@ EGLuint64NV eglGetSystemTimeNV()
+@@ -1915,7 +1918,7 @@ EGLuint64NV eglGetSystemTimeNV()
  
      return setErrorQuiet(EGL_BAD_DISPLAY, 0);
  }
@@ -761,4 +754,6 @@ index 2f6bc79..83a7991 100644
  // ----------------------------------------------------------------------------
  // Partial update extension
  // ----------------------------------------------------------------------------
+-- 
+2.9.3
 

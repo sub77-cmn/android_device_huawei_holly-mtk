@@ -1,37 +1,36 @@
-From 3ca8f7a683a08e1122c11a75affc1c083a5cdbf8 Mon Sep 17 00:00:00 2001
-From: ferhung <ferhung27@gmail.com>
-Date: Tue, 26 Apr 2016 04:42:45 +0800
-Subject: [PATCH] Revert "Bluetooth: Read BLE vendor capability to proceed on
- Secure conn"
+From 01840cdcc1dced6f8db0f89ffb93522f789891bc Mon Sep 17 00:00:00 2001
+From: sub77 <sub77@ymail.com>
+Date: Mon, 12 Sep 2016 23:14:07 +0200
+Subject: [PATCH] MediaTek
 
-This reverts commit fcbb22034e2b8fb499484c135845ea7072d06d50.
+Change-Id: I8fdee63f417c8f097d5a470c906ac1b5be549b4c
 ---
  device/include/controller.h      |  1 -
  device/src/controller.c          | 24 +++++-------------------
  hci/include/hci_packet_factory.h |  1 -
  hci/include/hci_packet_parser.h  |  4 ----
- hci/src/hci_layer.c              | 14 --------------
+ hci/src/hci_layer.c              | 15 ---------------
  hci/src/hci_packet_factory.c     |  7 +------
  hci/src/hci_packet_parser.c      | 18 +-----------------
- 7 files changed, 7 insertions(+), 62 deletions(-)
+ 7 files changed, 7 insertions(+), 63 deletions(-)
 
 diff --git a/device/include/controller.h b/device/include/controller.h
-index 7ad38d3..63ee7af 100755
+index 711ae07..291c33d 100644
 --- a/device/include/controller.h
 +++ b/device/include/controller.h
 @@ -76,7 +76,6 @@ typedef struct controller_t {
    uint8_t (*get_ble_resolving_list_max_size)(void);
    void (*set_ble_resolving_list_max_size)(int resolving_list_max_size);
-   uint8_t *(*get_local_supported_codecs)(uint8_t *no_codecs);
+   uint8_t *(*get_local_supported_codecs)(uint8_t *number_of_codecs);
 -  bool (*supports_ble_offload_features)(void);
  } controller_t;
  
  const controller_t *controller_get_interface();
 diff --git a/device/src/controller.c b/device/src/controller.c
-index df00d68..da739cd 100755
+index 39db285..c1206df 100644
 --- a/device/src/controller.c
 +++ b/device/src/controller.c
-@@ -77,7 +77,6 @@ static uint8_t no_of_local_supported_codecs = 0;
+@@ -73,7 +73,6 @@ static uint8_t number_of_local_supported_codecs = 0;
  
  static bool readable;
  static bool ble_supported;
@@ -74,7 +73,7 @@ index df00d68..da739cd 100755
  static uint16_t get_acl_data_size_classic(void) {
    assert(readable);
    return acl_data_size_classic;
-@@ -500,8 +487,7 @@ static const controller_t interface = {
+@@ -504,8 +491,7 @@ static const controller_t interface = {
  
    get_ble_resolving_list_max_size,
    set_ble_resolving_list_max_size,
@@ -85,7 +84,7 @@ index df00d68..da739cd 100755
  
  const controller_t *controller_get_interface() {
 diff --git a/hci/include/hci_packet_factory.h b/hci/include/hci_packet_factory.h
-index 0056817..ac6f12a 100755
+index 0056817..ac6f12a 100644
 --- a/hci/include/hci_packet_factory.h
 +++ b/hci/include/hci_packet_factory.h
 @@ -41,7 +41,6 @@ typedef struct {
@@ -97,12 +96,12 @@ index 0056817..ac6f12a 100755
  
  const hci_packet_factory_t *hci_packet_factory_get_interface();
 diff --git a/hci/include/hci_packet_parser.h b/hci/include/hci_packet_parser.h
-index 796a5df..51d00ea 100755
+index d09ac59..ba3b193 100644
 --- a/hci/include/hci_packet_parser.h
 +++ b/hci/include/hci_packet_parser.h
 @@ -96,10 +96,6 @@ typedef struct {
      BT_HDR *response,
-     uint8_t *no_of_local_supported_codecs, uint8_t *local_supported_codecs);
+     uint8_t *number_of_local_supported_codecs, uint8_t *local_supported_codecs);
  
 -  void (*parse_ble_read_offload_features_response)(
 -    BT_HDR *response,
@@ -112,13 +111,14 @@ index 796a5df..51d00ea 100755
  
  const hci_packet_parser_t *hci_packet_parser_get_interface();
 diff --git a/hci/src/hci_layer.c b/hci/src/hci_layer.c
-index a6c9a93..0afee8a 100644
+index 1621c39..4347354 100644
 --- a/hci/src/hci_layer.c
 +++ b/hci/src/hci_layer.c
-@@ -794,20 +794,6 @@ static waiting_command_t *get_waiting_command(command_opcode_t opcode) {
+@@ -894,21 +894,6 @@ static waiting_command_t *get_waiting_command(command_opcode_t opcode) {
+       node != list_end(commands_pending_response);
        node = list_next(node)) {
      waiting_command_t *wait_entry = list_node(node);
- 
+-
 -    if (!wait_entry || wait_entry->opcode != opcode)
 -      continue;
 -
@@ -133,11 +133,11 @@ index a6c9a93..0afee8a 100644
 -      node = list_next(node)) {
 -    waiting_command_t *wait_entry = list_node(node);
 -
-     if (!wait_entry || wait_entry->opcode != opcode) {
-         if(((wait_entry->opcode & HCI_GRP_VENDOR_SPECIFIC) == HCI_GRP_VENDOR_SPECIFIC) &&
-            ((opcode & HCI_GRP_VENDOR_SPECIFIC) == HCI_GRP_VENDOR_SPECIFIC)) {
+     if (wait_entry && (wait_entry->opcode != opcode) &&
+         (((wait_entry->opcode & HCI_GRP_VENDOR_SPECIFIC) == HCI_GRP_VENDOR_SPECIFIC) &&
+         ((opcode & HCI_GRP_VENDOR_SPECIFIC) == HCI_GRP_VENDOR_SPECIFIC))) {
 diff --git a/hci/src/hci_packet_factory.c b/hci/src/hci_packet_factory.c
-index d43d274..96f578a 100755
+index d43d274..96f578a 100644
 --- a/hci/src/hci_packet_factory.c
 +++ b/hci/src/hci_packet_factory.c
 @@ -141,10 +141,6 @@ static BT_HDR *make_read_local_supported_codecs(void) {
@@ -162,10 +162,10 @@ index d43d274..96f578a 100755
  
  const hci_packet_factory_t *hci_packet_factory_get_interface() {
 diff --git a/hci/src/hci_packet_parser.c b/hci/src/hci_packet_parser.c
-index a8de1a0..0b31da9 100755
+index cd1962c..71300cc 100644
 --- a/hci/src/hci_packet_parser.c
 +++ b/hci/src/hci_packet_parser.c
-@@ -87,21 +87,6 @@ static void parse_read_local_supported_codecs_response(
+@@ -88,21 +88,6 @@ static void parse_read_local_supported_codecs_response(
    buffer_allocator->free(response);
  }
  
@@ -187,7 +187,7 @@ index a8de1a0..0b31da9 100755
  static void parse_read_bd_addr_response(
      BT_HDR *response,
      bt_bdaddr_t *address_ptr) {
-@@ -270,8 +255,7 @@ static const hci_packet_parser_t interface = {
+@@ -273,8 +258,7 @@ static const hci_packet_parser_t interface = {
    parse_ble_read_local_supported_features_response,
    parse_ble_read_resolving_list_size_response,
    parse_ble_read_suggested_default_data_length_response,
@@ -197,4 +197,6 @@ index a8de1a0..0b31da9 100755
  };
  
  const hci_packet_parser_t *hci_packet_parser_get_interface() {
+-- 
+2.9.3
 
