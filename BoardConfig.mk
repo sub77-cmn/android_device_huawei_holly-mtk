@@ -15,7 +15,6 @@
 #
 
 # inherit from the proprietary version
--include vendor/terra/terrapad803/BoardConfigVendor.mk
 LOCAL_PATH := device/terra/terrapad803
 
 # Board
@@ -51,8 +50,8 @@ TARGET_USERIMAGES_SPARSE_EXT_DISABLED := false
 BOARD_HAS_MTK_HARDWARE := true
 MTK_HARDWARE := true
 BOARD_USES_LEGACY_MTK_AV_BLOB := true
-COMMON_GLOBAL_CFLAGS += -DMTK_HARDWARE -DADD_LEGACY_ACQUIRE_BUFFER_SYMBOL
-COMMON_GLOBAL_CPPFLAGS += -DMTK_HARDWARE
+#COMMON_GLOBAL_CFLAGS += -DMTK_HARDWARE -DADD_LEGACY_ACQUIRE_BUFFER_SYMBOL
+#COMMON_GLOBAL_CPPFLAGS += -DMTK_HARDWARE
 BLOCK_BASED_OTA := false
 
 # RIL
@@ -73,7 +72,7 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 TARGET_GLOBAL_CFLAGS   += -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
 TARGET_KMODULES := true
-COMMON_GLOBAL_CFLAGS += -DDISABLE_HW_ID_MATCH_CHECK
+#COMMON_GLOBAL_CFLAGS += -DDISABLE_HW_ID_MATCH_CHECK
 TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
 
 # Kernel 
@@ -153,7 +152,7 @@ BOARD_SEPOLICY_DIRS += device/terra/terrapad803/sepolicy
 POLICYVERS := 26
 
 # Hack for build
-$(shell mkdir -p $(OUT)/obj/KERNEL_OBJ/usr)
+$(shell mkdir -p /home/sub77/cm14/out/target/product/terrapad803/obj/KERNEL_OBJ/usr)
 
 # FMRadio
 MTK_FM_SUPPORT := yes
@@ -165,4 +164,4 @@ FM_LIB_BUILD_MT6628 := yes
 FM_LIB_BUILD_MT6630 := yes
 
 #Disable RAM Eater JACK
-ANDROID_COMPILE_WITH_JACK :=false
+#ANDROID_COMPILE_WITH_JACK :=false
